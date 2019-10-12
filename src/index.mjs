@@ -38,8 +38,17 @@ export default function(url, options) {
 
 		request.withCredentials = options.credentials=='include';
 
-		for (const i in options.headers) {
-			request.setRequestHeader(i, options.headers[i]);
+		if (options.headers && typeof options.headers.entries==='function') {
+			// Iterate through options.headers as a Headers instance
+			for (const pair of options.headers.entries()) {
+				request.setRequestHeader(pair[0], pair[1]);
+			}
+		}
+		else {
+			// Iterate through options.headers as a POJO
+			for (const i in options.headers) {
+				request.setRequestHeader(i, options.headers[i]);
+			}
 		}
 
 		request.send(options.body || null);
