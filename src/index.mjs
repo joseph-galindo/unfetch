@@ -1,13 +1,13 @@
-export default function (url, options) {
+export default function(url, options) {
 	options = options || {};
-	return new Promise((resolve, reject) => {
+	return new Promise( (resolve, reject) => {
 		const request = new XMLHttpRequest();
 		const keys = [];
 		const all = [];
 		const headers = {};
 
 		const response = () => ({
-			ok: (request.status / 100 | 0) == 2,		// 200-299
+			ok: (request.status/100|0) == 2,		// 200-299
 			statusText: request.statusText,
 			status: request.status,
 			url: request.responseURL,
@@ -36,9 +36,9 @@ export default function (url, options) {
 
 		request.onerror = reject;
 
-		request.withCredentials = options.credentials == 'include';
+		request.withCredentials = options.credentials=='include';
 
-		if (options.headers && typeof options.headers.entries === 'function') {
+		if (options.headers && typeof options.headers.entries==='function') {
 			// Iterate through options.headers as a Headers instance
 			for (const pair of options.headers.entries()) {
 				request.setRequestHeader(pair[0], pair[1]);
