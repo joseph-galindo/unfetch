@@ -83,12 +83,35 @@ describe('unfetch', () => {
 
 		it('supports options.headers as a Headers instance', () => {
 			let requestHeaders = {
+				iterationIndex: 0,
 				pairs: [
-					['a', 'b'],
-					['content-type', 'application/json']
+					{
+						value: ['a', 'b'],
+						done: false
+					},
+					{
+						value: ['content-type', 'application/json'],
+						done: false
+					},
+					{
+						value: undefined,
+						done: true
+					}
 				],
 				entries() {
-					return this.pairs;
+					const nextFunction = () => {
+						const nextItem = this.pairs[this.iterationIndex];
+
+						this.iterationIndex++;
+
+						return nextItem;
+					};
+
+					const iterator = {
+						next: nextFunction
+					};
+
+					return iterator;
 				}
 			};
 			let p = fetch('/foo', { headers: requestHeaders })
