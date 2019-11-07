@@ -40,8 +40,19 @@ export default function(url, options) {
 
 		if (options.headers && typeof options.headers.entries==='function') {
 			// Iterate through options.headers as a Headers instance
-			for (const pair of options.headers.entries()) {
+			// Normally would use for...of here, but babel transpiles it down to a for-loop that
+			// relies on length. This does NOT work with Headers.entries(), because it returns an
+			// iterator that has no `length` property.
+			// Read:
+			// https://developer.mozilla.org/en-US/docs/Web/API/Headers/entries
+			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#The_iterator_protocol
+			const headerEntries = options.headers.entries();
+			let headerItem = headerEntries.next();
+
+			while (!headerItem.done) {
+				const pair = headerItem.value;
 				request.setRequestHeader(pair[0], pair[1]);
+				headerItem = headerEntries.next();
 			}
 		}
 		else {
